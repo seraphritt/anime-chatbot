@@ -55,4 +55,4 @@ def query(command: str, arguments: list[str]) -> list[str]:
 # resultado = query("characters", ["Sasuke"])[0]
 # resultado = query_filter(resultado)
 # print(resultado)
-[]
+
