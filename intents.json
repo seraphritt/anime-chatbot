@@ -1,0 +1,18 @@
+{"intents": [ 
+    {"tag": "greetings",
+     "patterns": ["hello", "hey", "hi", "what's up", "how are you"],
+     "responses": ["Hello!", "Hey!", "How can I help you?"]
+    },
+    {"tag": "goodbye",
+     "patterns": ["bye", "see you later", "see you", "see ya", "goodbye"],
+     "responses": ["Bye!", "Hope I helped!", "See you soon!"]
+    },
+    {"tag": "thank you",
+     "patterns": ["thanks", "thank you"],
+     "responses": ["You are welcome!", "Can I help with something else?", "I'm here for anything!"]
+    },
+    {"tag": "name",
+     "patterns": ["what's your name", "how should i call you", "who are you", "what is your name"],
+     "responses": ["I'm AnIme bot!", "Call me AnIme bot!", "My name is AnIme bot!"]
+    }
+]}
