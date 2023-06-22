@@ -1,25 +1,39 @@
 from jikanpy import Jikan
 import random
+import re
 jikan = Jikan()
 
-def possible_query(result):
+
+def query_filter(query_result: list[str]) -> list[str]:
+    output = []
+    for each in query_result:
+        resu = re.sub(r'\[.*', "", each)  # remove o [Written by...]
+        resu = re.sub(r'\(.*\n', "", resu)  # remove o (Source ...)
+        resu = re.sub(r'.*:.*\n', "", resu)  # remove as informações adicionais do personagem
+        # informações adicionais como age, birthday...
+        output.append(resu)
+    return output
+
+
+def possible_query(result) -> bool:
     return result["pagination"]["items"]["count"] != 0
 
-def query(command, arguments="") -> list[str]:
+
+def query(command: str, arguments="") -> list[str]:
     # quem eh o personagem x ?
     if command.lower() == "characters":
         result = jikan.search("characters", arguments)
         if not possible_query(result):
             return []
         else:
-            return result["data"][0]['about']
+            return [result["data"][0]['about']]
     # sobre o que eh o anime x ?    
     elif command.lower() == "anime":
         result = jikan.search("anime", arguments)
         if not possible_query(result):
             return []
         else:
-            return result["data"][0]["synopsis"]  
+            return [result["data"][0]["synopsis"]]
     # quais os generos do anime x ?
     elif command.lower() == "genres":
         result = jikan.search("anime", arguments)
@@ -53,30 +67,34 @@ def query(command, arguments="") -> list[str]:
         items = 0
         page = 1
         result = jikan.top(type='anime', page=page)
-
-        while(possible_query(result)):
+        while possible_query(result):
             items += result["pagination"]["items"]["count"]
             if top > items:
                 page += 1
                 top -= items
                 result = jikan.top(type='anime', page=page)
             else:
-                return result['data'][top-1]['title']
+                return [result['data'][top-1]['title']]
         return []
     else:
-        return "I don't know the answer."
+        return ["I don't know the answer."]
 
 
 ## query (1) - quem é o personagem _ ?:
-# print(query("characters", "luffy"))
+# resultado = query("characters", "luffy")
+# resultado = query_filter(resultado)
+# print(*resultado)
 
 ## query (2) - sobre o que é o anime _ ?
-# print(query("anime", "one piece"))
+# resultado = query("anime", "one piece")
+# print(resultado)
+# resultado = query_filter(resultado)
+# print(*resultado)
 
 ## query (3) - qual o gênero do anime _ ?
 # print(query("genres", "one piece"))
 
-## query (4) - me recomende um anime.
+## query (4) - me recomende dois animes.
 # print(query("recommendations"))
 
 ## query (5) - me fale um anime da temporada
