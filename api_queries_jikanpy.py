@@ -81,9 +81,9 @@ def query(command: str, arguments="") -> list[str]:
 
 
 ## query (1) - quem é o personagem _ ?:
-# resultado = query("characters", "luffy")
-# resultado = query_filter(resultado)
-# print(*resultado)
+resultado = query("characters", "luffy")
+resultado = query_filter(resultado)
+print(*resultado)
 
 ## query (2) - sobre o que é o anime _ ?
 # resultado = query("anime", "one piece")
