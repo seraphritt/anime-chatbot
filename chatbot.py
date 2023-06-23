@@ -5,6 +5,7 @@ import numpy as np
 import nltk
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
+import api_queries_jikanpy as api_queries
 
 
 lemmatizer = WordNetLemmatizer()
@@ -12,6 +13,20 @@ intents = json.loads(open('intents.json').read())
 words = pickle.load(open('words.pkl', 'rb'))
 classes = pickle.load(open('classes.pkl', 'rb'))
 model = load_model('chatbot_model.h5')
+
+
+def is_noun(pos: list) -> bool:
+    nltk.download('averaged_perceptron_tagger', quiet=True)
+    nltk.download('tagsets', quiet=True)
+    # function to test if something is a noun
+    return pos[:2] == 'NN' or pos[:2] == 'NNP'
+
+
+def get_nouns(sentence: str) -> list:
+    # pega os substantivos de acordo com a gramática implementada no nltk
+    tokenized = nltk.word_tokenize(sentence)
+    nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
+    return nouns
 
 
 def clean_sentences(sentence: str) -> list[str]:
@@ -53,9 +68,55 @@ def resposta(intents_list, intents_json) -> str:
     return result
 
 
-print("Test")
-while True:
-    message = input()
-    intent = predict_class(message)
-    res = resposta(intent, intents)
-    print(res)
+def run_chatbot():
+    print("Chatbot running...")
+    while True:
+        message = input()
+        intent = predict_class(message)
+        res = resposta(intent, intents)
+        if 'tag' in res:
+            # filtra a query, baseada no tipo de query é necessário ou não o segundo argumento
+            # segundo a documentação da api: https://jikanpy.readthedocs.io/en/latest/
+            if res[4:] == "characters":
+                nouns = get_nouns(message)
+                # pega os substantivos da entrada do usuário
+                # só é utilizado o primeiro substantivo como argumento
+                if nouns:
+                    print(api_queries.query_filter(api_queries.query(res[4:], nouns[0])))
+                else:
+                    # se não houver substantivos, a query não pode ser feita
+                    # porque o segundo argumento é obrigatório
+                    print("Sorry, can you say it again? Please use capital letters on proper nouns.")
+            elif res[4:] == "anime":
+                nouns = get_nouns(message)
+                # pega os substantivos da entrada do usuário
+                # só é utilizado o primeiro substantivo como argumento
+                if nouns:
+                    print(api_queries.query_filter(api_queries.query(res[4:], nouns[0])))
+                else:
+                    # se não houver substantivos, a query não pode ser feita
+                    # porque o segundo argumento é obrigatório
+                    print("Sorry, can you say it again? Please use capital letters on proper nouns.")
+            elif res[4:] == "genres":
+                nouns = get_nouns(message)
+                # pega os substantivos da entrada do usuário
+                # só é utilizado o primeiro substantivo como argumento
+                print(api_queries.query_filter(api_queries.query(res[4:], nouns[0])))
+            elif res[4:] == "recommendations":
+                # essa query específica não precisa de argumento, portanto a função
+                # get_nouns() não é chamada
+                print(api_queries.query_filter(api_queries.query(res[4:])))
+            elif res[4:] == "season":
+                # essa query específica não precisa de argumento, portanto a função
+                # get_nouns() não é chamada
+                print(api_queries.query_filter(api_queries.query(res[4:])))
+            elif res[4:] == "top":
+                # essa query precisa de um numeral como segundo argumento
+                # se esse numeral não for fornecido será usado o 1 como numeral
+                # isso significa que será printado o melhor anime (top 1)
+                print(api_queries.query_filter(api_queries.query(res[4:])), 1)
+        else:
+            print(res)
+
+
+run_chatbot()
