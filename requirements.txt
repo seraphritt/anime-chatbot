@@ -1,2 +1,6 @@
 Flask~=2.3.2
 requests~=2.31.0
+numpy~=1.22.0
+tensorflow~=2.12.0
+nltk~=3.8.1
+jikanpy-v4
