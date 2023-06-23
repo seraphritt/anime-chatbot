@@ -1,5 +1,7 @@
 import nltk
 nltk.download('averaged_perceptron_tagger')
+nltk.download('tagsets')
+# nltk.help.upenn_tagset() get all tags
 
 
 def is_noun(pos: list) -> bool:
