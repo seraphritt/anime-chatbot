@@ -98,7 +98,7 @@ def query(command: str, arguments="") -> list[str]:
 # print(query("recommendations"))
 
 ## query (5) - me fale um anime da temporada
-# print(query("season"))
+# print(*query("season"))
 
 ## query (6) - qual o anime top _ ?
-# print(query("top", "1"))
+# print(*query("top", "1"))
