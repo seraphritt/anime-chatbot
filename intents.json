@@ -14,6 +14,9 @@
     {"tag": "name",
      "patterns": ["what's your name", "how should i call you", "who are you", "what is your name"],
      "responses": ["I'm AnIme bot! I can tell you about animes :)", "Call me AnIme bot!", "My name is AnIme bot! Ask me about animes."]
+    },{"tag": "questions",
+     "patterns": ["what kind of questions can I ask you?", "What can I ask you?", "What can you do?", "what can you answer?"],
+     "responses": ["Ask me about characters, anime synopsis, anime genre, an anime of this season, recommendations and the best current anime."]
     },
     {"tag": "anime",
      "patterns": ["Tell me about", "What is about", "Tell me the synopsis of"],
