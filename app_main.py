@@ -13,7 +13,7 @@ def chat():
     answer = chatbot.get_answer(question)
     return {
             "answer"  : answer
-            }
+        }
 
 @app.route('/')
 def index():
