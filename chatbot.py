@@ -9,13 +9,13 @@ import api_queries_jikanpy as api_queries
 
 
 lemmatizer = WordNetLemmatizer()
-intents = json.loads(open('intents.json').read())
-words = pickle.load(open('words.pkl', 'rb'))
-classes = pickle.load(open('classes.pkl', 'rb'))
-model = load_model('chatbot_model.h5')
+intents = json.loads(open('intents.json').read())   # abre o documentos onde estão as perguntas e respostas pre def
+words = pickle.load(open('words.pkl', 'rb'))    # abre o documento gerado pela rede neural que tem as palavras
+classes = pickle.load(open('classes.pkl', 'rb'))    # abre o documento gerado pela rede neural que tem as classes
+model = load_model('chatbot_model.h5')  # carrega o modelo
 
 
-def is_noun(pos: list) -> bool:
+def is_noun(pos: str) -> bool: # função que verifica se uma lista tem substantivos
     nltk.download('averaged_perceptron_tagger', quiet=True)
     nltk.download('tagsets', quiet=True)
     # function to test if something is a noun
@@ -30,6 +30,8 @@ def get_nouns(sentence: str) -> list:
 
 
 def clean_sentences(sentence: str) -> list[str]:
+    # faz o token, ou seja, pega a string e transforma em um valor numérico,
+    # bem como classifica a string na gramática e elimina os sinais de pontuação
     cleaned_sentence = nltk.word_tokenize(sentence)
     cleaned_sentence = [lemmatizer.lemmatize(word) for word in cleaned_sentence]
     return cleaned_sentence
@@ -37,7 +39,7 @@ def clean_sentences(sentence: str) -> list[str]:
 
 def bag_of_words(sentence: str) -> type(np):
     cleaned_sentence = clean_sentences(sentence)
-    bag = [0] * len(words)
+    bag = [0] * len(words)  # faz um vetor de zeros do tamanho das palavras
     for each_word in cleaned_sentence:
         for i, word in enumerate(words):
             if word == each_word:
@@ -45,10 +47,11 @@ def bag_of_words(sentence: str) -> type(np):
     return np.array(bag)
 
 
-def predict_class(sentence: str) -> list:
+def predict_class(sentence: str) -> list:   # classe que faz a predição da classe passando pelo modelo treinado
     bofwords = bag_of_words(sentence)
-    result = model.predict(np.array([bofwords]), verbose=0)[0]
-    error_threshhold = 0.20
+    result = model.predict(np.array([bofwords]), verbose=0)[0]  # verbose 0 é usado para que a barra de progresso de
+    # inferência não apareça para o usuário
+    error_threshhold = 0.20 # threshhold de 0.2, foi definido aleatoriamente
     results = [[i, r] for i, r in enumerate(result) if r > error_threshhold]
     results.sort(key=lambda x: x[1], reverse=True)
     lista = []
@@ -57,7 +60,7 @@ def predict_class(sentence: str) -> list:
     return lista
 
 
-def resposta(intents_list, intents_json) -> str:
+def resposta(intents_list, intents_json) -> str:    # essa função escolhe aleatoriamente as respostas do chatbot predef.
     tag = intents_list[0]['intent']
     list_intents = intents_json['intents']
     result = ''
@@ -68,7 +71,7 @@ def resposta(intents_list, intents_json) -> str:
     return result
 
 
-def run_chatbot():
+def run_chatbot():  # função de execução do chatbot
     print("Chatbot running...")
     while True:
         message = input()
