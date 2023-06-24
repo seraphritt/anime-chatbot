@@ -1,3 +1,4 @@
+import os
 import random
 import json
 import pickle
@@ -11,7 +12,14 @@ nltk.download("wordnet")
 
 lemmatizer = WordNetLemmatizer()    # instancia o lemmatizer, responsavel por aplicar a gramática
 
-intents = json.loads(open('intents.json').read())
+SEP = os.path.sep
+DIR_PATH = os.path.dirname(os.path.realpath(__file__)) + SEP
+INTENTS_PATH = DIR_PATH + "intents.json"
+WORDS_PATH = DIR_PATH + "words.pkl"
+CLASSES_PATH = DIR_PATH + "classes.pkl"
+CHAT_MODEL_PATH = DIR_PATH + "chatbot_model.h5"
+
+intents = json.loads(open(INTENTS_PATH).read())
 
 words = []
 classes = []
@@ -33,8 +41,8 @@ words = sorted(set(words))
 
 classes = sorted(set(classes))
 
-pickle.dump(words, open('words.pkl', 'wb')) # arquivos a serem escritos, esse formato é da biblioteca pickle
-pickle.dump(classes, open('classes.pkl', 'wb'))
+pickle.dump(words, open(WORDS_PATH, 'wb')) # arquivos a serem escritos, esse formato é da biblioteca pickle
+pickle.dump(classes, open(CLASSES_PATH, 'wb'))
 
 training = []
 outputEmpty = [0] * len(classes)
@@ -68,5 +76,5 @@ model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy
 
 # aqui treina-se o modelo com 200 épocas e após isso ele é salvo no formato .h5
 model.fit(trainX, trainY, epochs=200, batch_size=5, verbose=1)
-model.save('chatbot_model.h5')
+model.save(CHAT_MODEL_PATH)
 print('Done')

@@ -1,3 +1,4 @@
+import os
 import random
 import json
 import pickle
@@ -5,14 +6,21 @@ import numpy as np
 import nltk
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
-import api_queries_jikanpy as api_queries
+from . import api_queries_jikanpy as api_queries
 
+
+SEP = os.path.sep
+DIR_PATH = os.path.dirname(os.path.realpath(__file__)) + SEP
+INTENTS_PATH = DIR_PATH + "intents.json"
+WORDS_PATH = DIR_PATH + "words.pkl"
+CLASSES_PATH = DIR_PATH + "classes.pkl"
+CHAT_MODEL_PATH = DIR_PATH + "chatbot_model.h5"
 
 lemmatizer = WordNetLemmatizer()
-intents = json.loads(open('intents.json').read())   # abre o documentos onde estão as perguntas e respostas pre def
-words = pickle.load(open('words.pkl', 'rb'))    # abre o documento gerado pela rede neural que tem as palavras
-classes = pickle.load(open('classes.pkl', 'rb'))    # abre o documento gerado pela rede neural que tem as classes
-model = load_model('chatbot_model.h5')  # carrega o modelo
+intents = json.loads(open(INTENTS_PATH).read())    # abre o documentos onde estão as perguntas e respostas pre def
+words = pickle.load(open(WORDS_PATH, 'rb'))        # abre o documento gerado pela rede neural que tem as palavras
+classes = pickle.load(open(CLASSES_PATH, 'rb'))    # abre o documento gerado pela rede neural que tem as classes
+model = load_model(CHAT_MODEL_PATH)                # carrega o modelo
 
 
 def is_noun(pos: str) -> bool: # função que verifica se uma lista tem substantivos
@@ -71,17 +79,73 @@ def resposta(intents_list, intents_json) -> str:    # essa função escolhe alea
     return result
 
 
+def get_answer(question: str) -> str:
+    answer = ""
+    intent = predict_class(question)
+    res = resposta(intent, intents)
+    if 'tag' in res:
+        # filtra a query, baseada no tipo de query é necessário ou não o segundo argumento
+        # segundo a documentação da api: https://jikanpy.readthedocs.io/en/latest/
+        if res[4:] == "characters":
+            nouns = get_nouns(question)
+            # pega os substantivos da entrada do usuário
+            # só é utilizado o primeiro substantivo como argumento
+            if nouns:
+                answer = api_queries.query_filter(api_queries.query(res[4:], nouns[0]))
+            else:
+                # se não houver substantivos, a query não pode ser feita
+                # porque o segundo argumento é obrigatório
+                answer = "Sorry, can you say it again? Please use capital letters on proper nouns."
+        elif res[4:] == "anime":
+            nouns = get_nouns(question)
+            # pega os substantivos da entrada do usuário
+            # só é utilizado o primeiro substantivo como argumento
+            if nouns:
+                answer = api_queries.query_filter(api_queries.query(res[4:], nouns[0]))
+            else:
+                # se não houver substantivos, a query não pode ser feita
+                # porque o segundo argumento é obrigatório
+                answer = "Sorry, can you say it again? Please use capital letters on proper nouns."
+        elif res[4:] == "genres":
+            nouns = get_nouns(question)
+            # pega os substantivos da entrada do usuário
+            # só é utilizado o primeiro substantivo como argumento
+            answer = api_queries.query_filter(api_queries.query(res[4:], nouns[0]))
+        elif res[4:] == "recommendations":
+            # essa query específica não precisa de argumento, portanto a função
+            # get_nouns() não é chamada
+            answer = api_queries.query_filter(api_queries.query(res[4:]))
+        elif res[4:] == "season":
+            # essa query específica não precisa de argumento, portanto a função
+            # get_nouns() não é chamada
+            answer = api_queries.query_filter(api_queries.query(res[4:]))
+        elif res[4:] == "top":
+            # essa query precisa de um numeral como segundo argumento
+            # se esse numeral não for fornecido será usado o 1 como numeral
+            # isso significa que será printado o melhor anime (top 1)
+            answer = api_queries.query_filter(api_queries.query(res[4:]))
+    else:
+       answer = res
+
+    if (type(answer) == list):
+        if (len(answer) == 0):
+            answer = ""
+        else:
+            answer = answer[0]
+    return answer
+
+
 def run_chatbot():  # função de execução do chatbot
     print("Chatbot running...")
     while True:
-        message = input()
-        intent = predict_class(message)
+        question = input()
+        intent = predict_class(question)
         res = resposta(intent, intents)
         if 'tag' in res:
             # filtra a query, baseada no tipo de query é necessário ou não o segundo argumento
             # segundo a documentação da api: https://jikanpy.readthedocs.io/en/latest/
             if res[4:] == "characters":
-                nouns = get_nouns(message)
+                nouns = get_nouns(question)
                 # pega os substantivos da entrada do usuário
                 # só é utilizado o primeiro substantivo como argumento
                 if nouns:
@@ -91,7 +155,7 @@ def run_chatbot():  # função de execução do chatbot
                     # porque o segundo argumento é obrigatório
                     print("Sorry, can you say it again? Please use capital letters on proper nouns.")
             elif res[4:] == "anime":
-                nouns = get_nouns(message)
+                nouns = get_nouns(question)
                 # pega os substantivos da entrada do usuário
                 # só é utilizado o primeiro substantivo como argumento
                 if nouns:
@@ -101,7 +165,7 @@ def run_chatbot():  # função de execução do chatbot
                     # porque o segundo argumento é obrigatório
                     print("Sorry, can you say it again? Please use capital letters on proper nouns.")
             elif res[4:] == "genres":
-                nouns = get_nouns(message)
+                nouns = get_nouns(question)
                 # pega os substantivos da entrada do usuário
                 # só é utilizado o primeiro substantivo como argumento
                 print(api_queries.query_filter(api_queries.query(res[4:], nouns[0])))
@@ -122,4 +186,6 @@ def run_chatbot():  # função de execução do chatbot
             print(res)
 
 
-run_chatbot()
+if __name__ == "__main__":
+    run_chatbot()
+
