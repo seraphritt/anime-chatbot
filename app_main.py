@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 
 from chatbot import chatbot
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 
