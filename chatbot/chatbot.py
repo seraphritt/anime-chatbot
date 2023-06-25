@@ -7,7 +7,8 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
 from . import api_queries_jikanpy as api_queries
-
+# se quiser executar no terminal, descomente a linha abaixo e comente a linha superior
+# import api_queries_jikanpy as api_queries
 
 SEP = os.path.sep
 DIR_PATH = os.path.dirname(os.path.realpath(__file__)) + SEP

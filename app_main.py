@@ -5,14 +5,16 @@ from chatbot import chatbot
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 
+
 @app.route("/api/chat", methods=["GET", "POST"])
 def chat():
     content = request.json
     question = content.get("question", "")
     answer = chatbot.get_answer(question)
     return {
-            "answer"  : answer
+            "answer": answer
         }
+
 
 @app.route('/')
 def index():
