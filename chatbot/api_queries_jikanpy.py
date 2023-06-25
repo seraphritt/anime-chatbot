@@ -21,6 +21,8 @@ def possible_query(result) -> bool:
 
 def query(command: str, arguments="") -> list[str]:
     # quem eh o personagem x ?
+    if '*' in command:
+        return ["Please don't use Regex Symbols on your question"]
     if command.lower() == "characters":
         result = jikan.search("characters", arguments)
         if not possible_query(result):
@@ -98,9 +100,9 @@ def query(command: str, arguments="") -> list[str]:
 # print(query("recommendations"))
 
 ## query (5) - me fale um anime da temporada
-resultado = query("season")
-resultado = query_filter(resultado)
-print(resultado)
+# resultado = query("season")
+# resultado = query_filter(resultado)
+# print(resultado)
 
 ## query (6) - qual o anime top _ ?
 # print(*query("top", "1"))
