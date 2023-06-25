@@ -1,1 +1,28 @@
+# Env
 /env
+venv/
+env/
+
+# ASDF
+.tool-versions
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model
+*.h5
+* pkl

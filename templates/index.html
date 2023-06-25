@@ -18,7 +18,41 @@
 	      </nav>
 	    </header>
 	</div>
+    <div>
+      <center>
+      <input type="text" name="question" id="question"><br>
+      <button onclick="get_answer(document.getElementById('question').value)">Answer</button>
+        <div class="answer">
+            <p></p>
+        </div>
+      </center>
+    </div>
 </body>
+<script>
+    const get_answer = (question) => {
+
+        const obj = {
+            "question" : question,
+        };
+        const request = new Request("http://127.0.0.1:5000/api/chat", {
+            "headers": {"Content-Type": "application/json"},
+            "method": "POST",
+            "body": JSON.stringify(obj),
+        });
+
+        fetch(request)
+            .then(response => response.json())
+            .then(data => {
+                let answer_div = document.querySelector('.answer');
+                answer_div.textContent = data.answer;
+            })
+            .catch((error) => {
+                consolo.error(error);
+            });
+
+
+    };
+</script>
 <script>
 	/*var model, mask_model, ctx, videoWidth, videoHeight, canvas;
 	const video = document.getElementById('video');
