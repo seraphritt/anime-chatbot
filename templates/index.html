@@ -84,17 +84,23 @@
             .then(data => {
 				// Adiciona a mensagem com a resposta da IA
 				add_messagem(data.answer, false);
+
+				// Remove o loading
+				list_group_element.removeChild(document.getElementById("loading"));
+				input_element.value = "";
             })
             .catch((e) => {
 				let randomIndex = Math.floor(Math.random() * ERROR_MESSAGE.length)
 				add_messagem(ERROR_MESSAGE[randomIndex], false);
+				// Remove o loading
+				list_group_element.removeChild(document.getElementById("loading"));
+				input_element.value = "";
             });
 
-			// Remove o loading
-			list_group_element.removeChild(document.getElementById("loading"));
-			input_element.value = "";
+			
     };
 	const add_loading = () => {
+		console.log("oi")
 		loading_element = '<center id="loading"><div class="lds-ring"><div></div><div></div><div></div><div></center>';
 		list_group_element.innerHTML += loading_element;
 		scroll_botton();
