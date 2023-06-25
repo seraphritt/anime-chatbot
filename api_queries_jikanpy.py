@@ -81,12 +81,12 @@ def query(command: str, arguments="") -> list[str]:
 
 
 ## query (1) - quem é o personagem _ ?:
-# resultado = query("characters", "luffy")
+# resultado = query("characters", "Big Mom One Piece")
 # resultado = query_filter(resultado)
 # print(*resultado)
 
 ## query (2) - sobre o que é o anime _ ?
-# resultado = query("anime", "one piece")
+# resultado = query("anime", "Demon Slayer")
 # print(resultado)
 # resultado = query_filter(resultado)
 # print(*resultado)
@@ -98,9 +98,9 @@ def query(command: str, arguments="") -> list[str]:
 # print(query("recommendations"))
 
 ## query (5) - me fale um anime da temporada
-resultado = query("season")
-resultado = query_filter(resultado)
-print(resultado)
+# resultado = query("season")
+# resultado = query_filter(resultado)
+# print(resultado)
 
 ## query (6) - qual o anime top _ ?
 # print(*query("top", "1"))
