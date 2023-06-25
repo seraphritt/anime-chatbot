@@ -31,11 +31,14 @@ def is_noun(pos: str) -> bool: # função que verifica se uma lista tem substant
     return pos[:2] == 'NN' or pos[:2] == 'NNP'
 
 
-def get_nouns(sentence: str) -> list:
+def get_nouns(sentence: str) -> str:
     # pega os substantivos de acordo com a gramática implementada no nltk
+    string_nouns = '' # string contendo todos os substantivos, para facilitar a busca na query
     tokenized = nltk.word_tokenize(sentence)
     nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
-    return nouns
+    for each in nouns:
+        string_nouns = string_nouns + " " + each
+    return string_nouns
 
 
 def clean_sentences(sentence: str) -> list[str]:
@@ -82,36 +85,42 @@ def resposta(intents_list, intents_json) -> str:    # essa função escolhe alea
 
 def get_answer(question: str) -> str:
     answer = ""
+    if "*" in question:
+        answer = "Please don't use '*' on your question."
+        return answer
     intent = predict_class(question)
     res = resposta(intent, intents)
     if 'tag' in res:
         # filtra a query, baseada no tipo de query é necessário ou não o segundo argumento
         # segundo a documentação da api: https://jikanpy.readthedocs.io/en/latest/
         if res[4:] == "characters":
-            nouns = get_nouns(question)
+            str_nouns = get_nouns(question)
             # pega os substantivos da entrada do usuário
             # só é utilizado o primeiro substantivo como argumento
-            if nouns:
-                answer = api_queries.query_filter(api_queries.query(res[4:], nouns[0]))
+            if len(str_nouns) > 1:
+                answer = api_queries.query_filter(api_queries.query(res[4:], str_nouns))
             else:
                 # se não houver substantivos, a query não pode ser feita
                 # porque o segundo argumento é obrigatório
                 answer = "Sorry, can you say it again? Please use capital letters on proper nouns."
         elif res[4:] == "anime":
-            nouns = get_nouns(question)
+            str_nouns = get_nouns(question)
+            print(str_nouns)
             # pega os substantivos da entrada do usuário
             # só é utilizado o primeiro substantivo como argumento
-            if nouns:
-                answer = api_queries.query_filter(api_queries.query(res[4:], nouns[0]))
+            if len(str_nouns) > 1:
+                answer = api_queries.query_filter(api_queries.query(res[4:], str_nouns))
             else:
                 # se não houver substantivos, a query não pode ser feita
                 # porque o segundo argumento é obrigatório
                 answer = "Sorry, can you say it again? Please use capital letters on proper nouns."
         elif res[4:] == "genres":
-            nouns = get_nouns(question)
+            str_nouns = get_nouns(question)
+            print(str_nouns)
             # pega os substantivos da entrada do usuário
             # só é utilizado o primeiro substantivo como argumento
-            answer = api_queries.query_filter(api_queries.query(res[4:], nouns[0]))
+            if len(str_nouns) > 1:
+                answer = api_queries.query_filter(api_queries.query(res[4:], str_nouns))
         elif res[4:] == "recommendations":
             # essa query específica não precisa de argumento, portanto a função
             # get_nouns() não é chamada
@@ -124,12 +133,12 @@ def get_answer(question: str) -> str:
             # essa query precisa de um numeral como segundo argumento
             # se esse numeral não for fornecido será usado o 1 como numeral
             # isso significa que será printado o melhor anime (top 1)
-            answer = api_queries.query_filter(api_queries.query(res[4:]))
+            answer = api_queries.query_filter(api_queries.query(res[4:], 1))
     else:
-       answer = res
+        answer = res
 
-    if (type(answer) == list):
-        if (len(answer) == 0):
+    if type(answer) == list:
+        if len(answer) == 0:
             answer = ""
         else:
             answer = answer[0]
