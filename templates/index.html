@@ -52,6 +52,12 @@
 	let chat_element = document.querySelector('#list-group');
 	let input_element = document.getElementById('question');
 
+	const ERROR_MESSAGE = ["I'm sorry, I didn't understand your question. Could you please rephrase it?",
+						   "Apologies, but I couldn't comprehend your question. Could you please rephrase it?",
+						   "Sorry, I couldn't grasp the meaning of your question. Could you please rephrase it?",
+						   "I apologize for the confusion, but I couldn't understand what you're asking. Could you please rephrase your question?",
+						  ]
+
 	input_element.addEventListener("keydown", function (e) {
 		if (e.code === "Enter" || e.code === "NumpadEnter") {  // verifica se a tecla pressionada é "Enter"
 			get_answer();
@@ -60,6 +66,8 @@
 
     const get_answer = () => {
 		let question = input_element.value;
+		if(!question) return;
+
 		add_messagem(question, true);
 		add_loading();
         const obj = {
@@ -74,15 +82,16 @@
         fetch(request)
             .then(response => response.json())
             .then(data => {
-				// Remove o loading
-				list_group_element.removeChild(document.getElementById("loading"));
-
 				// Adiciona a mensagem com a resposta da IA
 				add_messagem(data.answer, false);
             })
-            .catch((error) => {
-                consolo.error(error);
+            .catch((e) => {
+				let randomIndex = Math.floor(Math.random() * ERROR_MESSAGE.length)
+				add_messagem(ERROR_MESSAGE[randomIndex], false);
             });
+
+			// Remove o loading
+			list_group_element.removeChild(document.getElementById("loading"));
 			input_element.value = "";
     };
 	const add_loading = () => {
