@@ -9,6 +9,7 @@ def query_filter(query_result: list[str]) -> list[str]:
     for each in query_result:
         resu = re.sub(r'\[.*', "", each)  # remove o [Written by...]
         resu = re.sub(r'\(.*\n', "", resu)  # remove o (Source ...)
+        resu = re.sub(r'\(.*', "", resu)  # remove o (Source ...)
         resu = re.sub(r'.*:.*\n', "", resu)  # remove as informações adicionais do personagem
         # informações adicionais como age, birthday...
         output.append(resu)

@@ -85,6 +85,9 @@ def resposta(intents_list, intents_json) -> str:    # essa função escolhe alea
 
 def get_answer(question: str) -> str:
     answer = ""
+    if "*" in question:
+        answer = "Please don't use '*' on your question."
+        return answer
     intent = predict_class(question)
     res = resposta(intent, intents)
     if 'tag' in res:
@@ -130,7 +133,7 @@ def get_answer(question: str) -> str:
             # essa query precisa de um numeral como segundo argumento
             # se esse numeral não for fornecido será usado o 1 como numeral
             # isso significa que será printado o melhor anime (top 1)
-            answer = api_queries.query_filter(api_queries.query(res[4:]))
+            answer = api_queries.query_filter(api_queries.query(res[4:], 1))
     else:
         answer = res
 
