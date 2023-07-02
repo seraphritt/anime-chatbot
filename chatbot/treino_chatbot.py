@@ -66,11 +66,16 @@ trainY = training[:, len(words):]
 
 # rede neural com arquitetura pré definida
 model = tf.keras.Sequential()
+# a entrada depende da quantidade de palavras tokenizadas no json
 model.add(tf.keras.layers.Dense(128, input_shape=(len(trainX[0]),), activation='relu'))
+#  camada totalmente com saída de tamanho 128 e com drop out de 50%
 model.add(tf.keras.layers.Dropout(0.5))
+#  camada totalmente com saída de tamanho 64 e com drop out de 50%
 model.add(tf.keras.layers.Dense(64, activation='relu'))
 model.add(tf.keras.layers.Dropout(0.5))
+#  camada totalmente com saída do tamanho das tags do arquivo .json, se tiver 10 tags, a dimensão da sáida é 10.
 model.add(tf.keras.layers.Dense(len(trainY[0]), activation='softmax'))
+# otimizador para agilizar a convergência da rede neural
 sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
