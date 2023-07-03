@@ -4,8 +4,8 @@
      "responses": ["Hello!", "Hey!", "How can I help you?"]
     },
     {"tag": "farewell",
-     "patterns": ["bye", "goodbye", "see you", "thanks for your help", "cya"],
-     "responses": ["bye", "If you want to ask something else I'm here :)"]
+     "patterns": ["bye", "see you", "thanks for your help", "cya"],
+     "responses": ["If you want to ask something else I'm here :)"]
     },
     {"tag": "character",
      "patterns": ["Who is", "Tell me who is", "Can you tell me who is from"],
