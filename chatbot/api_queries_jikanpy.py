@@ -1,6 +1,9 @@
 from jikanpy import Jikan
 import random
 import re
+import requests
+import json  
+import time
 jikan = Jikan()
 
 
@@ -15,10 +18,8 @@ def query_filter(query_result: list[str]) -> list[str]:
         output.append(resu)
     return output
 
-
 def possible_query(result) -> bool:
     return result["pagination"]["items"]["count"] != 0
-
 
 def query(command: str, arguments="") -> list[str]:
     # quem eh o personagem x ?
@@ -79,6 +80,19 @@ def query(command: str, arguments="") -> list[str]:
             else:
                 return [result['data'][top-1]['title']]
         return []
+    # recomendacao de animes similares ao anime x
+    elif command.lower() == 'similar':
+        print(arguments);
+        result = jikan.search('anime', arguments)
+        if not possible_query(result):
+            return []
+        else:
+            anime_id = result['data'][0]["mal_id"]
+            time.sleep(0.5);
+            res = requests.get(f'https://api.jikan.moe/v4/anime/{anime_id}/recommendations')
+            result = json.loads(res.text)
+            rand = random.randint(0, len(result['data'])-1)
+            return result['data'][rand]['entry']['title']
     else:
         return ["I don't know the answer."]
 
@@ -107,3 +121,6 @@ def query(command: str, arguments="") -> list[str]:
 
 ## query (6) - qual o anime top _ ?
 # print(*query("top", "1"))
+
+## query (7) - recomendacao de animes similares ao anime _ ?
+# print(query("similar", "black cover"))

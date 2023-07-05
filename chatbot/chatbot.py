@@ -134,6 +134,16 @@ def get_answer(question: str) -> str:
             # se esse numeral não for fornecido será usado o 1 como numeral
             # isso significa que será printado o melhor anime (top 1)
             answer = api_queries.query_filter(api_queries.query(res[4:], 1))
+        elif res[4:] == "similar":
+            str_nouns = get_nouns(question)
+            # pega os substantivos da entrada do usuário
+            # só é utilizado o primeiro substantivo como argumento
+            if len(str_nouns) > 1:
+                answer = api_queries.query(res[4:], str_nouns)
+            else:
+                # se não houver substantivos, a query não pode ser feita
+                # porque o segundo argumento é obrigatório
+                answer = "Sorry, can you say it again? Please use capital letters on proper nouns."
     else:
         answer = res
 
