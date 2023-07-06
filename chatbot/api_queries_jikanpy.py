@@ -82,17 +82,21 @@ def query(command: str, arguments="") -> list[str]:
         return []
     # recomendacao de animes similares ao anime x
     elif command.lower() == 'similar':
-        print(arguments);
+        print(arguments)
         result = jikan.search('anime', arguments)
         if not possible_query(result):
             return []
         else:
             anime_id = result['data'][0]["mal_id"]
-            time.sleep(0.5);
+            time.sleep(0.5)
             res = requests.get(f'https://api.jikan.moe/v4/anime/{anime_id}/recommendations')
             result = json.loads(res.text)
-            rand = random.randint(0, len(result['data'])-1)
-            return result['data'][rand]['entry']['title']
+            try:
+                rand = random.randint(0, len(result['data'])-1)
+                return result['data'][rand]['entry']['title']
+            except (UnicodeDecodeError, ValueError):
+                return ["Sorry, I can't recommend you a similar anime."]
+
     else:
         return ["I don't know the answer."]
 
