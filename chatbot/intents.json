@@ -41,5 +41,9 @@
     {"tag": "top-anime",
      "patterns": ["what's the best anime right now?", "what's the rank 1 anime right now?", "what is the best current anime?", "best anime"],
      "responses": ["tag:top"]
+    },
+    {"tag":"similar",
+     "patterns": ["can you suggest a similar anime to", "recommend me an anime similar to", "i want to see an anime similar to", "can i find an anime related to", "i am interested in animes like"],
+     "responses":["tag:similar"]
     }
 ]}
