@@ -148,7 +148,9 @@ def get_answer(question: str) -> str:
         answer = res
 
     if type(answer) == list:
-        if len(answer) == 0:
+        if answer[0] == "\n":
+            answer = "Sorry, can you say it again? Please use capital letters on proper nouns."
+        elif len(answer) == 0:
             answer = ""
         else:
             answer = answer[0]
