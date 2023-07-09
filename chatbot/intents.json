@@ -18,7 +18,8 @@
     {"tag": "name",
      "patterns": ["what's your name", "how should i call you", "who are you", "what is your name"],
      "responses": ["I'm AnIme bot! I can tell you about animes :)", "Call me AnIme bot!", "My name is AnIme bot! Ask me about animes."]
-    },{"tag": "questions",
+    },
+    {"tag": "questions",
      "patterns": ["what kind of questions can I ask you?", "What can I ask you?", "What can you do?", "what can you answer?"],
      "responses": ["Ask me about characters, anime synopsis, anime genre, an anime of this season, recommendations and the best current anime."]
     },
@@ -39,7 +40,7 @@
      "responses": ["tag:season"]
     },
     {"tag": "top-anime",
-     "patterns": ["what's the best anime right now?", "what's the rank 1 anime right now?", "what is the best current anime?", "best anime"],
+     "patterns": ["what's the best anime right now?", "what's the rank 1 anime right now?", "what is the best current anime?", "best anime", "top anime"],
      "responses": ["tag:top"]
     },
     {"tag":"similar",

@@ -40,14 +40,17 @@ def query(command: str, arguments="") -> list[str]:
             return [result["data"][0]["synopsis"]]
     # quais os generos do anime x ?
     elif command.lower() == "genres":
+        start = ["Sure thing: ", "Here you go: ", "Of course: "]
         result = jikan.search("anime", arguments)
         if not possible_query(result):
             return []
         else:
-            ans = []
+            ans = ""
             for genre in result["data"][0]['genres']:
-                ans.append(genre['name'])
-            return ans
+                if ans != "": ans += ", "
+                ans += genre['name']
+
+            return random.choice(start) + ans + "."
     # recomendacao
     elif command.lower() == 'recommendations':
         result = jikan.recommendations(type='anime')
@@ -56,17 +59,20 @@ def query(command: str, arguments="") -> list[str]:
         for anime in result['data'][rand]['entry']:
             ans.append(anime['title'])
         ans.append(result['data'][rand]['content'])
-        return ans
+        ans_string = f"Why don't you try watching '{ans[0]}' and '{ans[1]}'? {ans[2]}"
+        return ans_string
     # anime da temporada
     elif command.lower() == 'season':
+        start = ["A new anime is ", "Here you go: ", "A lastest anime sensation: "]
         result = jikan.seasons(extension='now')
         if not possible_query(result):
             return []
         else:
             rand = random.randint(0, len(result['data'])-1)
-            return [result['data'][rand]['title'], result['data'][rand]['synopsis']]
+            return random.choice(start) + result['data'][rand]['title'] + "." 
     # anime top x ?
     elif command.lower() == 'top':
+        start = ["The top one is: ", "Here you go: ", "The most epic anime ever: "]
         top = int(arguments)
         items = 0
         page = 1
@@ -78,11 +84,11 @@ def query(command: str, arguments="") -> list[str]:
                 top -= items
                 result = jikan.top(type='anime', page=page)
             else:
-                return [result['data'][top-1]['title']]
+                return random.choice(start) + result['data'][top-1]['title'] + "."
         return []
     # recomendacao de animes similares ao anime x
     elif command.lower() == 'similar':
-        print(arguments)
+        start = ["You should try ", "I recommend ", "A great choice is "]
         result = jikan.search('anime', arguments)
         if not possible_query(result):
             return []
@@ -93,7 +99,7 @@ def query(command: str, arguments="") -> list[str]:
             result = json.loads(res.text)
             try:
                 rand = random.randint(0, len(result['data'])-1)
-                return result['data'][rand]['entry']['title']
+                return random.choice(start) + result['data'][rand]['entry']['title'] + "."
             except (UnicodeDecodeError, ValueError):
                 return ["Sorry, I can't recommend you a similar anime."]
 

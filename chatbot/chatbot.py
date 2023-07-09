@@ -37,6 +37,7 @@ def get_nouns(sentence: str) -> str:
     tokenized = nltk.word_tokenize(sentence)
     nouns = [word for (word, pos) in nltk.pos_tag(tokenized) if is_noun(pos)]
     for each in nouns:
+        if each == "anime": continue
         string_nouns = string_nouns + " " + each
     return string_nouns
 
@@ -120,20 +121,21 @@ def get_answer(question: str) -> str:
             # pega os substantivos da entrada do usuário
             # só é utilizado o primeiro substantivo como argumento
             if len(str_nouns) > 1:
-                answer = api_queries.query_filter(api_queries.query(res[4:], str_nouns))
+                answer = api_queries.query(res[4:], str_nouns)
         elif res[4:] == "recommendations":
             # essa query específica não precisa de argumento, portanto a função
             # get_nouns() não é chamada
-            answer = api_queries.query_filter(api_queries.query(res[4:]))
+            answer = api_queries.query(res[4:])
+            # answer = api_queries.query_filter(api_queries.query(res[4:]))
         elif res[4:] == "season":
             # essa query específica não precisa de argumento, portanto a função
             # get_nouns() não é chamada
-            answer = api_queries.query_filter(api_queries.query(res[4:]))
+            answer = api_queries.query(res[4:])
         elif res[4:] == "top":
             # essa query precisa de um numeral como segundo argumento
             # se esse numeral não for fornecido será usado o 1 como numeral
             # isso significa que será printado o melhor anime (top 1)
-            answer = api_queries.query_filter(api_queries.query(res[4:], 1))
+            answer = api_queries.query(res[4:], 1)
         elif res[4:] == "similar":
             str_nouns = get_nouns(question)
             # pega os substantivos da entrada do usuário
