@@ -1,4 +1,4 @@
-# Dependencias (PT-BR)
+# Dependências (PT-BR)
 O projeto foi feito utilizando:
 - python 3.10
 
@@ -24,7 +24,7 @@ Caso você queira subir o servidor web:
 ```
 flask --app app_main run --debug
 ```
-# Requirements (PT-BR)
+# Requirements (ENG)
 The project was made using:
 - python 3.10
 
